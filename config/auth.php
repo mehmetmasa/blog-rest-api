@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Author;
 use App\Models\Admin;
 
 return [
@@ -18,6 +19,10 @@ return [
         ]
     ],
     'providers' => [
+        'authors' => [
+            'driver' => 'eloquent',
+            'model' => Author::class
+        ],
         'admins' => [
             'driver' => 'eloquent',
             'model' => Admin::class

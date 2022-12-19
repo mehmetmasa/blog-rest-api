@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Admin;
-use App\Models\User;
+use App\Models\Author;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -39,8 +39,9 @@ class AuthServiceProvider extends ServiceProvider
 
                 if ($request->is('api/admin/*')) {
                     return Admin::where('api_token', $key)->first();
+                } else {
+                    return Author::where('api_token', $key)->first();
                 }
-
             }
         });
 
