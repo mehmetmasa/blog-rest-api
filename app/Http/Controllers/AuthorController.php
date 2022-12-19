@@ -8,6 +8,93 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthorController extends Controller
 {
+    /*
+     *
+     * Author Login
+     *
+     */
+
+    public function login(Request $request)
+    {
+        // Validate passed parameters
+        $this->validate($request, [
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
+        // Get the user with the email
+        $author = Author::where('username', $request['username'])->first();
+
+        // check is user exist
+        if (!isset($author))
+        {
+            return ResponseHelper::response(false,'Author does not exist with this details');
+        }
+
+        // confirm that the password matches
+        if (!Hash::check($request['password'], $author['password']))
+        {
+            return ResponseHelper::response(false,'Incorrect author credentials');
+        }
+
+        // Generate Token
+        $token = $author->createToken('AuthToken')->accessToken;
+
+        // Add Generated token to user column
+        Author::where('username', $request['username'])->update(array('api_token' => $token));
+
+        return ResponseHelper::response(
+            true,
+            'Author Login',
+            [
+                'user' => $author,
+                'api_token' => $token
+            ]
+        );
+    }
+
+    /*
+    *
+    *  Author Register
+    *
+    */
+
+    public function register(Request $request)
+    {
+
+        $this->validate($request,[
+            'name' => 'required|max:50',
+            'username' => 'required|max:50|unique:authors,username,',
+            'password' => 'required|max:60|required_with:password_confirmation|same:password_confirmation',
+        ]);
+
+        $authorRegister = new Author();
+        $authorRegister->name = $request->name;
+        $authorRegister->username = $request->username;
+        $authorRegister->password = app('hash')->make($request->password);
+        $authorRegister->situation = AUTHOR_ACTIVE;
+        $authorRegister->save();
+
+        if (!$authorRegister)
+        {
+            return ResponseHelper::response(false,'System error! Failed to create author.');
+        }
+
+        // Generate Token
+        $token = $authorRegister->createToken('AuthToken')->accessToken;
+
+        // Add Generated token to user column
+        Author::where('username', $request['username'])->update(array('api_token' => $token));
+
+        return ResponseHelper::response(
+            true,
+            'Register successfully',
+            [
+                'user' => $authorRegister,
+                'api_token' => $token
+            ]
+        );
+    }
 
     /*
      *
