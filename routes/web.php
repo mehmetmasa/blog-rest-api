@@ -27,6 +27,14 @@ $router->group(['prefix' => 'api'], function () use ($router)
            $router->put('/{id}',  ['uses' => 'CategoryController@update']);
            $router->delete('/{id}',  ['uses' => 'CategoryController@delete']);
        });
+
+        $router->group(['prefix' => 'articles'], function () use ($router)
+        {
+            $router->get('/',  ['uses' => 'ArticleController@showAllArticle']);
+            $router->get('/{id}',  ['uses' => 'ArticleController@showOneArticle']);
+            $router->post('/',  ['uses' => 'ArticleController@create']);
+            $router->put('/{id}',  ['uses' => 'ArticleController@update']);
+        });
     });
 });
 
