@@ -35,6 +35,15 @@ $router->group(['prefix' => 'api'], function () use ($router)
             $router->post('/',  ['uses' => 'ArticleController@create']);
             $router->put('/{id}',  ['uses' => 'ArticleController@update']);
         });
+
+        $router->group(['prefix' => 'authors'], function () use ($router)
+        {
+            $router->get('/',  ['uses' => 'AuthorController@showAllAuthor']);
+            $router->get('/{id}',  ['uses' => 'AuthorController@showOneAuthor']);
+            $router->post('/',  ['uses' => 'AuthorController@create']);
+            $router->put('/{id}',  ['uses' => 'AuthorController@update']);
+            $router->delete('/{id}',  ['uses' => 'AuthorController@delete']);
+        });
     });
 });
 
